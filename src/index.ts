@@ -1,15 +1,4 @@
-type CircuitBreakerOptions = {
-    openCircuitTimeout?: number;
-    closedCircuitTimeout?: number;
-    failedRequestNumberThreshold?: number;
-    failurePercentageThreshold?: number;
-}
-
-enum CircuitBreakerState {
-    OPENED = "opened",
-    CLOSED = "closed",
-    FAILING = "failing"
-}
+import { CircuitBreakerOptions, CircuitBreakerState } from "./types";
 
 class CircuitBreaker<T> {
     private options: Required<CircuitBreakerOptions>;
@@ -130,3 +119,5 @@ class CircuitBreaker<T> {
         }
     }
 }
+
+export default CircuitBreaker
