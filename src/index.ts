@@ -13,7 +13,7 @@ enum CircuitBreakerState {
 
 class CircuitBreaker<T> {
     private options: Required<CircuitBreakerOptions>;
-    private state: CircuitBreakerState;
+    private state: CircuitBreakerState = CircuitBreakerState.OPENED;
 
     private resetFailingTime: number | undefined = undefined;
     private retryTriggerTime: number | undefined = undefined;
@@ -35,7 +35,7 @@ class CircuitBreaker<T> {
 
     async run() {
         // is closed, or is still waiting for the retry time to be expired
-        if (this.state === CircuitBreakerState.CLOSED && (Date.now() < this.retryTriggerTime)) {
+        if (this.state === CircuitBreakerState.CLOSED && (Date.now() < this.retryTriggerTime!)) {
             throw new Error("Circuit breaker is closed");
         }
 
@@ -58,7 +58,7 @@ class CircuitBreaker<T> {
         if (this.state === CircuitBreakerState.FAILING) {
             this.successCount++;
 
-            if (Date.now() >= this.resetFailingTime) {
+            if (Date.now() >= this.resetFailingTime!) {
                 this.state = CircuitBreakerState.OPENED;
                 this.resetCounters();
             }
@@ -102,7 +102,7 @@ class CircuitBreaker<T> {
             this.failureCount++;
 
             // Failing time was expired, but circuit wasn't closed yet
-            if (Date.now() > this.resetFailingTime) {
+            if (Date.now() > this.resetFailingTime!) {
                 this.resetCounters();
                 this.failureCount = 1;
                 this.resetFailingTime = Date.now() + this.options.openCircuitTimeout;

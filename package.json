@@ -1,0 +1,26 @@
+{
+  "name": "nodejs-circuit-breaker",
+  "version": "0.0.1",
+  "description": "Simple implementation of a CircuitBreaker pattern for Node.js",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CapitanFindusFI/nodejs-circuit-breaker.git"
+  },
+  "keywords": [
+    "nodejs",
+    "circuit-breaker"
+  ],
+  "author": "CapitanFindusFI <am95.dev@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CapitanFindusFI/nodejs-circuit-breaker/issues"
+  },
+  "homepage": "https://github.com/CapitanFindusFI/nodejs-circuit-breaker#readme",
+  "devDependencies": {
+    "typescript": "^4.6.2"
+  }
+}
