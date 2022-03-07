@@ -11,25 +11,29 @@ class CircuitBreaker<T> {
     private successCount = 0;
 
     constructor(
-        private request: () => Promise<T>,
+        private request: (...args: any[]) => Promise<T>,
         opts: CircuitBreakerOptions
     ) {
         this.options = {
-            openCircuitTimeout: opts.openCircuitTimeout || 5000,
+            openCircuitTimeout: opts.openCircuitTimeout || 10000,
             closedCircuitTimeout: opts.closedCircuitTimeout || 5000,
             failedRequestNumberThreshold: opts.failedRequestNumberThreshold || 10,
             failurePercentageThreshold: opts.failurePercentageThreshold || 50
         }
     }
 
-    async run() {
+    public getState(): CircuitBreakerState {
+        return this.state;
+    }
+
+    async run(...args: any[]): Promise<T> {
         // is closed, or is still waiting for the retry time to be expired
         if (this.state === CircuitBreakerState.CLOSED && (Date.now() < this.retryTriggerTime!)) {
             throw new Error("Circuit breaker is closed");
         }
 
         try {
-            const response = await this.request();
+            const response = await this.request(...args);
             return this.onSuccess(response)
         } catch (e) {
             return this.onFailure(e)
@@ -42,7 +46,7 @@ class CircuitBreaker<T> {
         this.resetFailingTime = undefined;
     }
 
-    private onSuccess(response: T) {
+    private onSuccess(response: T): T {
         // Was failing, update success count and see if it can be reopened
         if (this.state === CircuitBreakerState.FAILING) {
             this.successCount++;
